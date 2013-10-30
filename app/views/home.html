@@ -1,0 +1,10 @@
+<form ng-controller="HomeController">
+    <input type="text" ng-model="customerName" required />
+    <input type="text" id="address" placeholder="" 
+           class="input-xlarge" 
+           ng-model="customerAddress" required />
+    <button type="submit"  
+            ng-disabled="customerForm.$invalid" 
+            ng-click="findRestaurants(customerName, customerAddress)">
+    Submit</button>
+</form>
