@@ -2,11 +2,10 @@
      <li ng-repeat="post in posts">
         
           <a href="#/menu/{{restaurant.id}}">
-            <img class="img-rounded pull-left" ng-src="img/post/{{post.id}}.jpg">
+            <img class="img-rounded pull-left" ng-src="{{post.image}}">
             <b>{{post.messagename}}</b>
           </a>
-         
-        
+               
         
       </li>
 </ul>
