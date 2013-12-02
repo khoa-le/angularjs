@@ -3,33 +3,33 @@
  ****************************************/
 
 .fm-panel {
-  background-color: #fff;
+    background-color: #fff;
 
-  border: 1px solid black;
+    border: 1px solid black;
 
-  -webkit-border-top-left-radius: 3px;
-  -moz-border-radius-topleft: 3px;
-  border-top-left-radius: 3px;
+    -webkit-border-top-left-radius: 3px;
+    -moz-border-radius-topleft: 3px;
+    border-top-left-radius: 3px;
 
-  -webkit-border-top-right-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  border-top-right-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    -moz-border-radius-topright: 3px;
+    border-top-right-radius: 3px;
 
-  margin-bottom: 20px;
-  padding: 10px 10px 20px 10px;
+    margin-bottom: 20px;
+    padding: 10px 10px 20px 10px;
 
-  overflow: hidden;
+    overflow: hidden;
 }
 
 .fm-panel > h4 {
-  background-color: #E5E5E5;
-  margin: -10px -10px 10px -10px;
-  padding: 10px 10px 10px 10px;
+    background-color: #E5E5E5;
+    margin: -10px -10px 10px -10px;
+    padding: 10px 10px 10px 10px;
 }
 
 
 .fm-right {
-  text-align: right;
+    text-align: right;
 }
 
 
@@ -39,61 +39,61 @@
  ****************************************/
 
 .fm-rating {
-  color: #a9a9a9;
-  margin: 0;
-  padding: 0;
+    color: #a9a9a9;
+    margin: 0;
+    padding: 0;
 
 }
 
 ul.fm-rating {
-  display: inline-block;
+    display: inline-block;
 }
 
 .fm-rating-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .fm-rating li {
-  list-style-type: none;
-  display: inline-block;
-  padding: 1px;
-  text-align: center;
-  font-weight: bold;
+    list-style-type: none;
+    display: inline-block;
+    padding: 1px;
+    text-align: center;
+    font-weight: bold;
 }
 
 .fm-rating .fm-selected {
-  color: #000000;
+    color: #000000;
 }
 
 .fm-rating .fm-hover {
-  text-shadow: white 0 0  2px,
-  white 0 0  2px,
-  white 0 0  2px,
-  white 0 0  2px,
-  blue  0 0 10px;
+    text-shadow: white 0 0  2px,
+        white 0 0  2px,
+        white 0 0  2px,
+        white 0 0  2px,
+        blue  0 0 10px;
 }
 
 fm-rating a {
-  visibility: hidden;
-  padding-left: 7px;
+    visibility: hidden;
+    padding-left: 7px;
 }
 
 fm-rating:hover a {
-  visibility: visible;
+    visibility: visible;
 }
 
 
 .fm-deliver-to {
-  display: block;
-  width: 450px;
+    display: block;
+    width: 450px;
 }
 
 
 input.ng-invalid.ng-dirty {
-  border-color: #E9322D;
-  -webkit-box-shadow: 0 0 6px #F8B9B7;
-  -moz-box-shadow: 0 0 6px #f8b9b7;
-  box-shadow: 0 0 6px #F8B9B7;
+    border-color: #E9322D;
+    -webkit-box-shadow: 0 0 6px #F8B9B7;
+    -moz-box-shadow: 0 0 6px #f8b9b7;
+    box-shadow: 0 0 6px #F8B9B7;
 }
 
 
@@ -107,140 +107,147 @@ input.ng-invalid.ng-dirty {
 /* customer */
 
 .fm-customer-bkg {
-  background-image: url(../img/customer_bkg.jpg);
-  opacity: 0.4;
-  height: 705px;
+    background-image: url(../img/customer_bkg.jpg);
+    opacity: 0.4;
+    height: 705px;
 }
 
 
 /* restaurant list */
 
 .fm-restaurant-list {
-  min-height: 646px !important;
+    min-height: 646px !important;
 }
 
 .fm-restaurant-list table {
-  margin: -10px -20px -20px -10px;
-  width: 700px;
+    margin: -10px -20px -20px -10px;
+    width: 700px;
 }
 
 .fm-restaurant-list th:first-child {
-  width: 500px;
+    width: 500px;
 }
 
 .fm-restaurant-list th {
-  width: 100px;
+    width: 100px;
 }
 
 .fm-restaurant-list img {
-  margin-right: 10px;
-  width: 100px;
-  height: 100px;
+    margin-right: 10px;
+    width: 100px;
+    height: 100px;
 }
 
 
 /* menu */
 
 .fm-restaurant  {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .fm-restaurant h3 {
-  margin-top: 0;
+    margin-top: 0;
 }
 
 .fm-restaurant img {
-  width: 150px;
-  height: 150px;
+    width: 150px;
+    height: 150px;
 }
 
 .fm-restaurant .fm-rating {
-  display: block;
+    display: block;
 }
 
 .fm-menu-list li {
-  list-style-type: none;
+    list-style-type: none;
 }
 
 .fm-menu-list li span {
-  padding-right: 20px;
+    padding-right: 20px;
 }
 
 .fm-menu-list a {
-  color: inherit;
+    color: inherit;
 }
 
 .fm-menu-list a:hover {
-  text-decoration: none;
-  color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 .fm-menu-list .icon-plus-sign {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .fm-menu-list li:hover .icon-plus-sign {
-  visibility: visible;
+    visibility: visible;
 }
 
 .fm-menu-list li:hover {
-  color: black;
+    color: black;
 }
 
 .fm-menu-list ul li {
-  text-align: center;
+    text-align: center;
 }
 
 .fm-cart li {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .fm-cart .icon-remove-sign {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .fm-cart li:hover .icon-remove-sign {
-  visibility: visible;
+    visibility: visible;
 }
 
 .fm-cart form {
-  padding-left: 2px;
+    padding-left: 2px;
 }
 
 .fm-cart p {
-  padding-left: 20px;
-  padding-top: 5px;
+    padding-left: 20px;
+    padding-top: 5px;
 }
 
 
 /* checkout */
 
 .fm-checkout table {
-  width: 960px;
-  margin-left: -10px;
+    width: 960px;
+    margin-left: -10px;
 }
 
 .fm-checkout table th:nth-child(2),
 .fm-checkout table td:nth-child(2) {
-  width: 100%;
-  text-align: left;
+    width: 100%;
+    text-align: left;
 }
 
 .fm-checkout table td:nth-child(1) input {
-  width: 30px;
+    width: 30px;
 }
 
 .fm-checkout table th,
 .fm-checkout table td {
-  text-align: right;
+    text-align: right;
 }
 
 .fm-checkout table tr:last-child th {
-  text-align: right;
+    text-align: right;
 }
 
 input.ng-invalid {
-  border: 1px solid red;
+    border: 1px solid red;
+}
+
+.container-image ul li div.img{
+    background: #ccc;
+}
+.container-image ul li img{
+    text-align: center;
 }
