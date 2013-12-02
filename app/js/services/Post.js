@@ -2,5 +2,5 @@
 
 foodMeApp.factory('Post', function($resource) {
     
-  return $resource('/bot/post', {});
+  return $resource('/api/post/id/:id', {id: '@id'});
 });

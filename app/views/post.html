@@ -1,0 +1,16 @@
+<div class="container">
+
+    <div class="row">   
+        <div class="span12">
+            <h3>{{post.message}}</h3>
+            
+            <div class="list-image" ng-repeat="pic in post.pictures">
+                <div>
+                    <img ng-src="{{pic.urloriginal}}">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

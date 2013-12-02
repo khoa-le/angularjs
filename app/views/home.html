@@ -1,11 +1,11 @@
-<ul ng-controller="HomeController">
-     <li ng-repeat="post in posts">
-        
-          <a href="#/menu/{{restaurant.id}}">
-            <img class="img-rounded pull-left" ng-src="{{post.image}}">
-            <b>{{post.messagename}}</b>
-          </a>
-               
-        
-      </li>
-</ul>
+<div class="container-image">
+    <ul rn-carousel rn-carousel-index="indexpost" rn-carousel-watch rn-carousel-buffered class="basic">
+        <li ng-repeat="post in posts">
+            <a href="#/post/{{post.id}}">
+                <img class="img-rounded pull-left" ng-src="{{post.image}}">
+            </a>
+            <br/>
+            <p>{{post.message}}</p>
+        </li>
+    </ul>
+</div>

@@ -1,6 +1,7 @@
 'use strict';
 
-var foodMeApp = angular.module('foodMeApp', ['ngResource']);
+
+var foodMeApp = angular.module('foodMeApp', ['ngResource','ngMobile','ngRoute','angular-carousel']);
 
 foodMeApp.config(function($routeProvider) {
 
@@ -16,6 +17,10 @@ foodMeApp.config(function($routeProvider) {
       when('/menu/:restaurantId', {
         controller: 'MenuController',
         templateUrl: 'views/menu.html'
+      }).
+      when('/post/:postId', {
+        controller: 'PostController',
+        templateUrl: 'views/post.html'
       }).
       when('/checkout', {
         controller: 'CheckoutController',

@@ -5,9 +5,9 @@ var open = require('open');
 var RestaurantRecord = require('./model').Restaurant;
 var MemoryStorage = require('./storage').Memory;
 
-var API_URL = '/api/restaurant';
+var API_URL = '/api1/restaurant';
 var API_URL_ID = API_URL + '/:id';
-var API_URL_ORDER = '/api/order';
+var API_URL_ORDER = '/api1/order';
 
 var removeMenuItems = function(restaurant) {
   var clone = {};

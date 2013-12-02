@@ -1,5 +1,5 @@
 'use strict';
 
 foodMeApp.factory('Restaurant', function($resource) {
-  return $resource('/api/restaurant/:id', {id: '@id'});
+  return $resource('/api1/restaurant/:id', {id: '@id'});
 });

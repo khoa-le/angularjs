@@ -2,9 +2,10 @@
 <html lang="en" ng-app="foodMeApp">
 <head>
   <meta charset="utf-8">
-  <title>FoodMe</title>
+  <title>Source.vn</title>
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/bootstrap-united.css">
+  <link rel="stylesheet" href="css/angular-carousel.css">
 </head>
 <body>
 
@@ -12,17 +13,12 @@
 
   <div class="navbar" ng-controller="NavbarController">
     <div class="navbar-inner">
-      <a class="brand" href="#/">FoodMe</a>
+      <a class="brand" href="#/">Source</a>
       <ul class="nav">
-        <li ng-class="{active: routeIs('/')}"><a href="#/">Home</a></li>
-        <li ng-class="{active: routeIs('/restaurants')}"><a href="#/restaurants">Restaurants</a></li>
-        <li ng-class="{active: routeIs('/how-it-works')}"><a href="#/how-it-works">How it works</a></li>
-        <li ng-class="{active: routeIs('/who-we-are')}"><a href="#/who-we-are">Who we are</a></li>
+        <li ng-class="{active: routeIs('/')}"><a href="#/">Home</a></li>       
       </ul>
 
-      <ul class="nav pull-right">
-        <li ng-class="{active: routeIs('/help')}"><a href="#/help">Help</a></li>
-      </ul>
+      
     </div>
   </div>
 
@@ -37,11 +33,16 @@
 -->
 <script src="lib/angular/angular.js"></script>
 <script src="lib/angular/angular-resource.js"></script>
+<script src="lib/angular/angular-route.js"></script>
+<script src="lib/angular/angular-carousel.js"></script>
+<script src="lib/angular/angular-mobile.js"></script>
+
 <script src="js/app.js"></script>
 <script src="js/controllers/HomeController.js"></script>
 <script src="js/controllers/CheckoutController.js"></script>
 <script src="js/controllers/CustomerController.js"></script>
 <script src="js/controllers/MenuController.js"></script>
+<script src="js/controllers/PostController.js"></script>
 <script src="js/controllers/NavbarController.js"></script>
 <script src="js/controllers/RestaurantsController.js"></script>
 <script src="js/controllers/ThankYouController.js"></script>
