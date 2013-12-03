@@ -1,8 +1,8 @@
 <div class="container-image">
     <ul rn-carousel rn-carousel-index="indexpost" rn-carousel-watch rn-carousel-buffered=5 class="basic">
-        <li ng-repeat="image in post[postid].images">
+        <li ng-repeat="picture in post.pictures">
             <div class="img" >                
-                    <img class="img-rounded pull-left" ng-src="{{image}}" width="100%">                
+                    <img class="img-rounded pull-left" ng-src="{{picture.urloriginal}}" width="100%">                
             </div>
         </li>
     </ul>
