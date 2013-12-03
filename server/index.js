@@ -53,8 +53,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
             json: true
         }, function(error, response, body) {
 
-            if (!error && response.statusCode === 200) {
-                console.log(body) // Print the json response
+            if (!error && response.statusCode === 200) {                
                 res.send(200, body);
                 
             }
@@ -71,8 +70,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
             json: true
         }, function(error, response, body) {
 
-            if (!error && response.statusCode === 200) {
-                console.log(body) // Print the json response
+            if (!error && response.statusCode === 200) {                
                 res.send(200, body);
                 
             }
