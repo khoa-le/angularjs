@@ -1,6 +1,7 @@
 var express = require('express');
 var fs = require('fs');
 var open = require('open');
+var request = require("request");
 
 var RestaurantRecord = require('./model').Restaurant;
 var MemoryStorage = require('./storage').Memory;
@@ -9,7 +10,7 @@ var API_URL = '/api/restaurant';
 var API_URL_ID = API_URL + '/:id';
 var API_URL_ORDER = '/api/order';
 var API_URL_POST = '/api/post';
-var API_URL_POST_ID = API_URL_POST+ '/:id';
+var API_URL_POST_ID = API_URL_POST + '/:id';
 
 var removeMenuItems = function(restaurant) {
     var clone = {};
@@ -45,16 +46,39 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
 
     // POST
     app.get(API_URL_POST, function(req, res, next) {
-        fs.readFile('data/posts.json', function(err, data) {           
-            res.send(200, data);
+        var url = "http://www.source.vn/api/post";
+
+        request({
+            url: url,
+            json: true
+        }, function(error, response, body) {
+
+            if (!error && response.statusCode === 200) {
+                console.log(body) // Print the json response
+                res.send(200, body);
+                
+            }
         });
-        
+
     });
     app.get(API_URL_POST_ID, function(req, res, next) {
-        fs.readFile('data/all.json', function(err, data) {  
-            
-            res.send(200, data);
+
+
+        var url = "http://www.source.vn/api/post/id/"+ req.params.id;
+
+        request({
+            url: url,
+            json: true
+        }, function(error, response, body) {
+
+            if (!error && response.statusCode === 200) {
+                console.log(body) // Print the json response
+                res.send(200, body);
+                
+            }
         });
+        
+
     });
 
 
