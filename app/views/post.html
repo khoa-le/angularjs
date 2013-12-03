@@ -1,16 +1,9 @@
-<div class="container">
-
-    <div class="row">   
-        <div class="span12">
-            <h3>{{post.message}}</h3>
-            
-            <div class="list-image" ng-repeat="pic in post.pictures">
-                <div>
-                    <img ng-src="{{pic.urloriginal}}">
-                </div>
+<div class="container-image">
+    <ul rn-carousel rn-carousel-index="indexpost" rn-carousel-watch rn-carousel-buffered=5 class="basic">
+        <li ng-repeat="image in post[postid].images">
+            <div class="img">                
+                    <img class="img-rounded pull-left" ng-src="{{image}}">                
             </div>
-
-        </div>
-    </div>
+        </li>
+    </ul>
 </div>
-
