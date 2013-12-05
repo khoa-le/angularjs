@@ -20,8 +20,11 @@
       </div>
   </div>
 
-
-  <ng-view></ng-view>
+    <div ng-controller="AppController">
+        <div class="alert alert-info" ng-show="loading">Loading</div>
+        <ng-view></ng-view>
+    </div>
+  
 
 </div>
 
