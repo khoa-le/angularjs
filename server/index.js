@@ -46,36 +46,96 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
 
     // POST
     app.get(API_URL_POST, function(req, res, next) {
-        var url = "http://www.source.vn/api/post";
 
-        request({
-            url: url,
-            json: true
-        }, function(error, response, body) {
+        var redis = require("redis"),
+                client = redis.createClient();
 
-            if (!error && response.statusCode === 200) {                
-                res.send(200, body);
+        client.on("error", function(err) {
+            console.log("Error " + err);
+        });
+//        client.set("string key", "string val", redis.print);
+//        client.hset("hash key", "hashtest 1", "some value", redis.print);
+//        client.hset(["hash key", "hashtest 2", "some other value"], redis.print);
+//        client.hkeys("hash key", function(err, replies) {
+//            console.log(replies.length + " replies:");
+//            replies.forEach(function(reply, i) {
+//                console.log("    " + i + ": " + reply);
+//            });
+//            client.quit();
+//        });
+
+             var redis_posts = client.lrange('posts', 0, -1, function(err, data) {
+            if (data.length) {
+                var result = [];
+                var i = 0;
+                data.forEach(function(entry) {
+                    client.hgetall("post:id:" + entry, function(err, reply) {
+                        i++;
+                        result.push(reply);
+                        if ((data.length - 1) === i) {
+                            client.quit();
+                            res.send(200, result);
+                        }
+
+                    });
+                });
+            }
+            else {
                 
+                 var url = "http://www.source.vn/api/post";
+                request({
+                    url: url,
+                    json: true
+                }, function(error, response, body) {
+
+                    if (!error && response.statusCode === 200) {
+
+                        body.forEach(function(entry) {
+                            client.lpush('posts', entry.id);
+                            client.hset("post:id:" + entry.id, "id", entry.id);
+                            client.hset("post:id:" + entry.id, "title", entry.title);
+                            client.hset("post:id:" + entry.id, "image", entry.image);
+
+                        });
+
+                        client.quit();
+                        res.send(200, body);
+
+                    }
+                });
             }
         });
+
+
+
 
     });
     app.get(API_URL_POST_ID, function(req, res, next) {
 
 
-        var url = "http://www.source.vn/api/post/id/"+ req.params.id;
+        var url = "http://www.source.vn/api/post/id/" + req.params.id;
 
         request({
             url: url,
             json: true
         }, function(error, response, body) {
 
-            if (!error && response.statusCode === 200) {                
+            if (!error && response.statusCode === 200) {
+
+//                 body.forEach(function(entry) {
+//                    client.lpush('posts', entry.id);
+//                    client.hset("post:id:" + entry.id, "id", entry.id);
+//                    client.hset("post:id:" + entry.id, "title", entry.title);
+//                    client.hset("post:id:" + entry.id, "image", entry.image);
+//
+//                });
+//
+//                client.quit();
                 res.send(200, body);
-                
+
             }
         });
-        
+
 
     });
 
