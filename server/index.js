@@ -78,9 +78,9 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
                             client.hset("post:id:" + entry.id, "id", entry.id);
                             client.hset("post:id:" + entry.id, "title", entry.title);
                             client.hset("post:id:" + entry.id, "image", entry.image);
-                            client.hset("post:id" + entry.id, "width", entry.picture.width);
-                            client.hset("post:id" + entry.id, "height", entry.picture.height);
-                            client.hset("post:id" + entry.id, "thumb", entry.picture.thumb);
+                            client.hset("post:id:" + entry.id, "width", entry.picture.width);
+                            client.hset("post:id:" + entry.id, "height", entry.picture.height);
+                            client.hset("post:id:" + entry.id, "thumb", entry.picture.thumb);
                         });
                         //set expire 2 hours
                         client.expire('posts',7200);
