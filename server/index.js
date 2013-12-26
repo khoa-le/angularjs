@@ -93,7 +93,6 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
     });
     app.get(API_URL_POST_ID, function(req, res, next) {
 
-        var forEach = require('async-foreach').forEach;
         var redis = require("redis"),
                 client = redis.createClient();
         client.on("error", function(err) {
@@ -103,15 +102,15 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
             if (data.length) {
                 var result = [];
                 var i = 0;
-                data.forEach(function(entry) {
+                async.forEach(data, function(entry, callback) {
                     client.hgetall("post_detail:id:" + entry, function(err, reply) {
                         i++;
                         result.push(reply);
-                        if ((data.length - 1) === i) {
-                            client.quit();
-                            res.send(200, {pictures: result});
-                        }
+                        callback();
                     });
+                }, function() {
+                    client.quit();
+                    res.send(200, {pictures: result});
                 });
             }
             else {
@@ -158,7 +157,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
 
                                     });
                                 });
-                                console.log('y');
+                                
                             });
                         }
 
