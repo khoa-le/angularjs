@@ -2,6 +2,7 @@ var express = require('express');
 var fs = require('fs');
 var open = require('open');
 var request = require("request");
+var async = require("async");
 
 var RestaurantRecord = require('./model').Restaurant;
 var MemoryStorage = require('./storage').Memory;
@@ -46,7 +47,6 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
         client.on("error", function(err) {
             console.log("Error " + err);
         });
-
         var redis_posts = client.lrange('posts', 0, -1, function(err, data) {
             if (data.length) {
                 var result = [];
@@ -83,7 +83,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
                             client.hset("post:id:" + entry.id, "thumb", entry.picture.thumb);
                         });
                         //set expire 2 hours
-                        client.expire('posts',86400);
+                        client.expire('posts', 86400);
                         client.quit();
                         res.send(200, body);
                     }
@@ -93,13 +93,13 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
     });
     app.get(API_URL_POST_ID, function(req, res, next) {
 
+        var forEach = require('async-foreach').forEach;
         var redis = require("redis"),
                 client = redis.createClient();
         client.on("error", function(err) {
             console.log("Error " + err);
         });
-
-        var redis_posts = client.lrange('pictures:post:' + req.params.id, 0, -1, function(err, data) {
+        client.lrange('pictures:post:' + req.params.id, 0, -1, function(err, data) {
             if (data.length) {
                 var result = [];
                 var i = 0;
@@ -121,20 +121,53 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
                     json: true
                 }, function(error, response, body) {
                     if (!error && response.statusCode === 200) {
-                        body.pictures.forEach(function(entry) {
-                            client.lpush('pictures:post:' + req.params.id, entry.id);
-                            client.hset("post_detail:id:" + entry.id, "id", entry.id);
-                            client.hset("post_detail:id:" + entry.id, "url", entry.url);
-                        });
-                        client.quit();
-                        res.send(200, body);
+                        if (typeof body.pictures === 'undefined') {
+                            client.quit();
+                            res.send(200, {pictures: null});
+                        }
+                        else {
+                            async.forEach(body.pictures, function(entry, callback) {
+                                client.lpush('pictures:post:' + req.params.id, entry.id);
+                                client.hset("post_detail:id:" + entry.id, "id", entry.id);
+                                client.hset("post_detail:id:" + entry.id, "thumb", entry.urlthumb);
+                                client.hset("post_detail:id:" + entry.id, "width_thumb", entry.width_thumb);
+                                client.hset("post_detail:id:" + entry.id, "height_thumb", entry.height_thumb);
+                                client.hset("post_detail:id:" + entry.id, "image", entry.url);
+                                client.hset("post_detail:id:" + entry.id, "width", entry.width);
+                                client.hset("post_detail:id:" + entry.id, "height", entry.height);
+                                callback();
+                                console.log("save redis :" + entry.id);
+
+                            }, function() {
+                                var result = [];
+                                var i = 0;
+
+                                //re-get  data save on redis
+                                client.lrange('pictures:post:' + req.params.id, 0, -1, function(err, data) {
+                                    async.forEach(data, function(entry, callback) {
+                                        client.hgetall("post_detail:id:" + entry, function(err, reply) {
+                                            i++;
+                                            console.log(i);
+                                            result.push(reply);
+                                            callback();
+                                        });
+                                    }, function() {
+                                        console.log('quit');
+                                        client.quit();
+                                        res.send(200, {pictures: result});
+
+                                    });
+                                });
+                                console.log('y');
+                            });
+                        }
+
                     }
                 });
             }
 
 
         });
-
     });
     app.post(API_URL, function(req, res, next) {
         var restaurant = new RestaurantRecord(req.body);
