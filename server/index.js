@@ -3,6 +3,7 @@ var fs = require('fs');
 var open = require('open');
 var request = require("request");
 var async = require("async");
+var moment = require('moment');
 
 var RestaurantRecord = require('./model').Restaurant;
 var MemoryStorage = require('./storage').Memory;
@@ -12,6 +13,10 @@ var API_URL_ID = API_URL + '/:id';
 var API_URL_ORDER = '/api/order';
 var API_URL_POST = '/api/post';
 var API_URL_POST_ID = API_URL_POST + '/:id';
+
+var API_URL_PHOTOS_LIKE = '/api/photos/like' + '/:id';
+var API_URL_PHOTO_LIKE = '/api/photo/like' + '/:userid' + '/:id';
+var API_URL_PHOTO_UNLIKE = '/api/photo/unlike' + '/:userid' + '/:id';
 
 var removeMenuItems = function(restaurant) {
     var clone = {};
@@ -157,7 +162,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
 
                                     });
                                 });
-                                
+
                             });
                         }
 
@@ -168,6 +173,103 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
 
         });
     });
+
+    app.get(API_URL_PHOTOS_LIKE, function(req, res, next) {
+
+        var redis = require("redis"),
+                client = redis.createClient();
+        client.on("error", function(err) {
+            console.log("Error " + err);
+        });
+        client.zrange('photo:liked:' + req.params.id, 0, -1, function(err, data) {
+            if (data.length) {
+                var result = [];
+
+                async.forEach(data, function(entry, callback) {
+                    console.log(entry);
+                    client.hgetall("photo:id:" + entry, function(err, reply) {
+                        if (reply !== null) {
+                            result.push(reply);
+                        }
+
+                        callback();
+                    });
+                }, function() {
+                    client.quit();
+                    res.send(200, {photos: result});
+                });
+            }
+            else {
+                client.quit();
+                res.send(200, {photos: null});
+            }
+        });
+    });
+
+
+    app.get(API_URL_PHOTO_LIKE, function(req, res, next) {
+
+        var redis = require("redis"),
+                client = redis.createClient();
+        client.on("error", function(err) {
+            console.log("Error " + err);
+        });
+
+        client.zadd('photo:liked:' + req.params.userid, moment().format("X"), req.params.id, function() {
+
+            client.hgetall("photo:id:" + req.params.id, function(err, reply) {
+                if (reply == null) {
+
+                    var url = "http://www.source.vn/api/photo/id/" + req.params.id;
+                    request({
+                        url: url,
+                        json: true
+                    }, function(error, response, body) {
+
+                        if (!error && response.statusCode === 200) {
+                            if (typeof body.photo !== "undefined") {
+                                console.log("save photo");
+                                var entry = body.photo;
+                                client.hset("photo:id:" + entry.id, "id", entry.id);
+                                client.hset("photo:id:" + entry.id, "width", entry.width);
+                                client.hset("photo:id:" + entry.id, "height", entry.height);
+                                client.hset("photo:id:" + entry.id, "url", entry.url);
+                                client.hset("photo:id:" + entry.id, "urlthumb", entry.urlthumb);
+                                client.hset("photo:id:" + entry.id, "urloriginal", entry.urloriginal);
+                                client.hset("photo:id:" + entry.id, "width_thumb", entry.width_thumb);
+                                client.hset("photo:id:" + entry.id, "height_thumb", entry.height_thumb);
+                            }
+                            client.quit();
+                            res.send(200, {success: "1"});
+
+                        }
+                    });
+                }
+                else {
+                    client.quit();
+                    res.send(200, {success: "0"});
+                }
+            });
+
+        });
+
+    });
+
+    app.get(API_URL_PHOTO_UNLIKE, function(req, res, next) {
+
+        var redis = require("redis"),
+                client = redis.createClient();
+        client.on("error", function(err) {
+            console.log("Error " + err);
+        });
+
+        client.zrem('photo:liked:' + req.params.userid, req.params.id);
+        client.quit();
+        res.send(200, {success: "1"});
+
+    });
+
+
     app.post(API_URL, function(req, res, next) {
         var restaurant = new RestaurantRecord(req.body);
         var errors = [];
