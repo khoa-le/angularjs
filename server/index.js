@@ -101,8 +101,6 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
             }
         });
     });
-
-
     app.get(API_URL_POSTS, function(req, res, next) {
 
         var redis = require("redis"),
@@ -113,10 +111,8 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
         var page = parseInt(req.params.page);
         var start = page * 15;
         var stop = (page + 1) * 15 - 1;
+        var redis_posts = client.zrevrange('posts', start, stop, function(err, data) {
 
-        var redis_posts = client.zrange('posts', start, stop, function(err, data){
-console.log(err);
-console.log(data);
             if (data.length) {
                 var result = [];
                 var i = 0;
@@ -140,13 +136,11 @@ console.log(data);
                     url: url,
                     json: true
                 }, function(error, response, body) {
-                    
-                    if (!error && response.statusCode === 200) {
-                        var result = [];
+
+                    if (!error && response.statusCode === 200) {                       
                         async.forEach(body, function(entry, callback) {
-                            result.push({id: entry.id, title: entry.title, image: entry.image, width: entry.picture.width, height: entry.picture.height, thumb: entry.picture.thumb});
+                            //result.push({id: entry.id, title: entry.title, image: entry.image, width: entry.picture.width, height: entry.picture.height, thumb: entry.picture.thumb});
                             client.zadd('posts', entry.id, entry.id);
-                            console.log("save post id:"+entry.id);
                             client.hset("post:id:" + entry.id, "id", entry.id);
                             client.hset("post:id:" + entry.id, "title", entry.title);
                             client.hset("post:id:" + entry.id, "image", entry.image);
@@ -155,21 +149,26 @@ console.log(data);
                             client.hset("post:id:" + entry.id, "thumb", entry.picture.thumb);
                             callback();
                         }, function() {
-                          
-                            client.expire('posts', 86400);
-                            client.quit();
-                            res.send(200, result);
-                                        
-
+                            client.zrevrange('posts', start, stop, function(err, data) {
+                                var result = [];
+                                async.forEach(data, function(entry, callback) {
+                                    client.hgetall("post:id:" + entry, function(err, reply) {
+                                        result.push(reply);
+                                        callback();
+                                    });
+                                }, function() {
+                                    client.expire('posts', 86400);
+                                    client.quit();
+                                    res.send(200, result);
+                                });
+                            });
                         });
-
                     }
                 });
             }
+
         });
     });
-
-
     app.get(API_URL_POST_ID, function(req, res, next) {
 
         var redis = require("redis"),
@@ -215,11 +214,9 @@ console.log(data);
                                 client.hset("post_detail:id:" + entry.id, "height", entry.height);
                                 callback();
                                 console.log("save redis :" + entry.id);
-
                             }, function() {
                                 var result = [];
                                 var i = 0;
-
                                 //re-get  data save on redis
                                 client.lrange('pictures:post:' + req.params.id, 0, -1, function(err, data) {
                                     async.forEach(data, function(entry, callback) {
@@ -233,10 +230,8 @@ console.log(data);
                                         console.log('quit');
                                         client.quit();
                                         res.send(200, {pictures: result});
-
                                     });
                                 });
-
                             });
                         }
 
@@ -247,7 +242,6 @@ console.log(data);
 
         });
     });
-
     app.get(API_URL_PHOTOS_LIKE, function(req, res, next) {
 
         var redis = require("redis"),
@@ -258,7 +252,6 @@ console.log(data);
         client.zrange('photo:liked:' + req.params.id, 0, -1, function(err, data) {
             if (data.length) {
                 var result = [];
-
                 async.forEach(data, function(entry, callback) {
                     console.log(entry);
                     client.hgetall("photo:id:" + entry, function(err, reply) {
@@ -279,8 +272,6 @@ console.log(data);
             }
         });
     });
-
-
     app.get(API_URL_PHOTO_LIKE, function(req, res, next) {
 
         var redis = require("redis"),
@@ -288,7 +279,6 @@ console.log(data);
         client.on("error", function(err) {
             console.log("Error " + err);
         });
-
         client.zadd('photo:liked:' + req.params.userid, moment().format("X"), req.params.id, function() {
 
             client.hgetall("photo:id:" + req.params.id, function(err, reply) {
@@ -315,7 +305,6 @@ console.log(data);
                             }
                             client.quit();
                             res.send(200, {success: "1"});
-
                         }
                     });
                 }
@@ -324,11 +313,8 @@ console.log(data);
                     res.send(200, {success: "0"});
                 }
             });
-
         });
-
     });
-
     app.get(API_URL_PHOTO_UNLIKE, function(req, res, next) {
 
         var redis = require("redis"),
@@ -336,14 +322,10 @@ console.log(data);
         client.on("error", function(err) {
             console.log("Error " + err);
         });
-
         client.zrem('photo:liked:' + req.params.userid, req.params.id);
         client.quit();
         res.send(200, {success: "1"});
-
     });
-
-
     app.post(API_URL, function(req, res, next) {
         var restaurant = new RestaurantRecord(req.body);
         var errors = [];
