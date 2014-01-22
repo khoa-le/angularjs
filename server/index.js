@@ -57,6 +57,11 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
         client.on("error", function(err) {
             console.log("Error " + err);
         });
+
+
+        client.quit();
+        res.send(200, body);
+
         var redis_posts = client.lrange('posts', 0, -1, function(err, data) {
             if (data.length) {
                 var result = [];
@@ -137,7 +142,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
                     json: true
                 }, function(error, response, body) {
 
-                    if (!error && response.statusCode === 200) {                       
+                    if (!error && response.statusCode === 200) {
                         async.forEach(body, function(entry, callback) {
                             //result.push({id: entry.id, title: entry.title, image: entry.image, width: entry.picture.width, height: entry.picture.height, thumb: entry.picture.thumb});
                             client.zadd('posts', entry.id, entry.id);
