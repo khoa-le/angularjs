@@ -49,64 +49,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
     app.get(API_URL, function(req, res, next) {
         res.send(200, storage.getAll().map(removeMenuItems));
     });
-    // POST
-    app.get(API_URL_POST, function(req, res, next) {
-
-        var redis = require("redis"),
-                client = redis.createClient();
-        client.on("error", function(err) {
-            console.log("Error " + err);
-        });
-
-
-        client.quit();
-
-        res.send(200, null);
-
-        var redis_posts = client.lrange('posts', 0, -1, function(err, data) {
-            if (data.length) {
-                var result = [];
-                var i = 0;
-                data.forEach(function(entry) {
-                    client.hgetall("post:id:" + entry, function(err, reply) {
-                        i++;
-                        result.push(reply);
-                        if ((data.length - 1) === i) {
-                            client.quit();
-                            res.send(200, result);
-                        }
-
-                    });
-                });
-            }
-            else {
-
-                var url = "http://www.source.vn/api/post";
-                request({
-                    url: url,
-                    json: true
-                }, function(error, response, body) {
-
-                    if (!error && response.statusCode === 200) {
-
-                        body.forEach(function(entry) {
-                            client.lpush('posts', entry.id);
-                            client.hset("post:id:" + entry.id, "id", entry.id);
-                            client.hset("post:id:" + entry.id, "title", entry.title);
-                            client.hset("post:id:" + entry.id, "image", entry.image);
-                            client.hset("post:id:" + entry.id, "width", entry.picture.width);
-                            client.hset("post:id:" + entry.id, "height", entry.picture.height);
-                            client.hset("post:id:" + entry.id, "thumb", entry.picture.thumb);
-                        });
-                        //set expire 2 hours
-                        client.expire('posts', 86400);
-                        client.quit();
-                        res.send(200, body);
-                    }
-                });
-            }
-        });
-    });
+    
     app.get(API_URL_POSTS, function(req, res, next) {
 
         var redis = require("redis"),
