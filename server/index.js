@@ -60,6 +60,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
 
 
         client.quit();
+        var body = [];
         res.send(200, body);
 
         var redis_posts = client.lrange('posts', 0, -1, function(err, data) {
