@@ -18,6 +18,11 @@ var API_URL_PHOTOS_LIKE = '/api/photos/like' + '/:id';
 var API_URL_PHOTO_LIKE = '/api/photo/like' + '/:userid' + '/:id';
 var API_URL_PHOTO_UNLIKE = '/api/photo/unlike' + '/:userid' + '/:id';
 
+
+//Set list post by page
+var API_URL_POSTS = '/api/posts/:page';
+
+
 var removeMenuItems = function(restaurant) {
     var clone = {};
 
@@ -96,6 +101,75 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
             }
         });
     });
+
+
+    app.get(API_URL_POSTS, function(req, res, next) {
+
+        var redis = require("redis"),
+                client = redis.createClient();
+        client.on("error", function(err) {
+            console.log("Error " + err);
+        });
+        var page = parseInt(req.params.page);
+        var start = page * 15;
+        var stop = (page + 1) * 15 - 1;
+
+        var redis_posts = client.zrange('posts', start, stop, function(err, data){
+console.log(err);
+console.log(data);
+            if (data.length) {
+                var result = [];
+                var i = 0;
+                data.forEach(function(entry) {
+                    client.hgetall("post:id:" + entry, function(err, reply) {
+                        i++;
+                        result.push(reply);
+                        if ((data.length - 1) === i) {
+                            client.quit();
+                            res.send(200, result);
+                        }
+
+                    });
+                });
+            }
+            else {
+
+                var url = "http://www.source.vn/api/posts/offset/" + start + "/limit/15";
+                console.log(start);
+                request({
+                    url: url,
+                    json: true
+                }, function(error, response, body) {
+                    
+                    if (!error && response.statusCode === 200) {
+                        var result = [];
+                        async.forEach(body, function(entry, callback) {
+                            result.push({id: entry.id, title: entry.title, image: entry.image, width: entry.picture.width, height: entry.picture.height, thumb: entry.picture.thumb});
+                            client.zadd('posts', entry.id, entry.id);
+                            console.log("save post id:"+entry.id);
+                            client.hset("post:id:" + entry.id, "id", entry.id);
+                            client.hset("post:id:" + entry.id, "title", entry.title);
+                            client.hset("post:id:" + entry.id, "image", entry.image);
+                            client.hset("post:id:" + entry.id, "width", entry.picture.width);
+                            client.hset("post:id:" + entry.id, "height", entry.picture.height);
+                            client.hset("post:id:" + entry.id, "thumb", entry.picture.thumb);
+                            callback();
+                        }, function() {
+                          
+                            client.expire('posts', 86400);
+                            client.quit();
+                            res.send(200, result);
+                                        
+
+                        });
+
+                    }
+                });
+            }
+        });
+    });
+
+
     app.get(API_URL_POST_ID, function(req, res, next) {
 
         var redis = require("redis"),
