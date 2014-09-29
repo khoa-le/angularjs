@@ -8,7 +8,7 @@ var moment = require('moment');
 var RestaurantRecord = require('./model').Restaurant;
 var MemoryStorage = require('./storage').Memory;
 
-var api = require('./api');
+
 
 var API_URL = '/api/restaurant';
 var API_URL_ID = API_URL + '/:id';
