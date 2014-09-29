@@ -63,7 +63,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
         var start = page * 15;
         var stop = (page + 1) * 15 - 1;
         var redis_posts = client.zrevrange('posts', start, stop, function(err, data) {
-
+console.log(err);
             if (data.length) {
                 var result = [];
                 var i = 0;
@@ -120,6 +120,8 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
             }
 
         });
+        
+        console.log(redis_posts);
     });
     app.get(API_URL_POST_ID, function(req, res, next) {
 
