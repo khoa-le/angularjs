@@ -8,6 +8,8 @@ var moment = require('moment');
 var RestaurantRecord = require('./model').Restaurant;
 var MemoryStorage = require('./storage').Memory;
 
+var api = require('./api');
+
 var API_URL = '/api/restaurant';
 var API_URL_ID = API_URL + '/:id';
 var API_URL_ORDER = '/api/order';
@@ -49,7 +51,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
     app.get(API_URL, function(req, res, next) {
         res.send(200, storage.getAll().map(removeMenuItems));
     });
-    
+
     app.get(API_URL_POSTS, function(req, res, next) {
 
         var redis = require("redis"),
@@ -61,7 +63,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
         var start = page * 15;
         var stop = (page + 1) * 15 - 1;
         var redis_posts = client.zrevrange('posts', start, stop, function(err, data) {
-
+console.log(data)
             if (data.length) {
                 var result = [];
                 var i = 0;
