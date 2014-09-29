@@ -63,13 +63,14 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
         var start = page * 15;
         var stop = (page + 1) * 15 - 1;
         var redis_posts = client.zrevrange('posts', start, stop, function(err, data) {
-console.log(data);
+
             if (data.length) {
                 var result = [];
                 var i = 0;
                 data.forEach(function(entry) {
                     client.hgetall("post:id:" + entry, function(err, reply) {
                         i++;
+                        console.log(i);
                         result.push(reply);
                         if ((data.length - 1) === i) {
                             client.quit();
