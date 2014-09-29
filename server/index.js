@@ -63,7 +63,7 @@ exports.start = function(PORT, STATIC_DIR, DATA_FILE, TEST_DIR) {
         var start = page * 15;
         var stop = (page + 1) * 15 - 1;
         var redis_posts = client.zrevrange('posts', start, stop, function(err, data) {
-console.log(err);
+console.log(data);
             if (data.length) {
                 var result = [];
                 var i = 0;
@@ -83,7 +83,7 @@ console.log(err);
             else {
 
                 var url = "http://www.source.vn/api/posts/offset/" + start + "/limit/15";
-                console.log(start);
+              
                 request({
                     url: url,
                     json: true
